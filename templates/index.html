@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bulk Email Sender with Excel</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        textarea {
+            height: 150px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .flash-message {
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .flash-message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .info-box {
+            background-color: #e2f0ff;
+            border: 1px solid #b8daff;
+            border-radius: 4px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Bulk Email Sender with Excel</h1>
+    
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <div class="flash-message {% if 'Error' in message or 'Failed' in message %}error{% endif %}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    
+    <div class="info-box">
+        <h3>Instructions:</h3>
+        <p>1. Upload an Excel file with columns "email" and "image_name"</p>
+        <p>2. Place your PNG images in the "images" folder with names matching the "image_name" column</p>
+        <p>3. You can use placeholders like {column_name} in your message to personalize emails</p>
+    </div>
+    
+    <form action="/upload_excel" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="excel_file">Excel File (.xlsx, .xls):</label>
+            <input type="file" id="excel_file" name="excel_file" accept=".xlsx, .xls" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="subject">Email Subject:</label>
+            <input type="text" id="subject" name="subject" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="message">Email Message Template:</label>
+            <textarea id="message" name="message" placeholder="Hello,&#10;&#10;Here is your personalized content.&#10;&#10;You can use placeholders like {first_name} if your Excel has those columns.&#10;&#10;Regards,&#10;Your Name" required></textarea>
+        </div>
+        
+        <button type="submit">Send Emails</button>
+    </form>
+</body>
+</html>
